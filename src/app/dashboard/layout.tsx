@@ -22,7 +22,7 @@ export default function DashboardLayout({
               </label>
             </div>
           </Navbar>
-          <main className="pt-3">{children}</main>
+          <main className="pt-3 px-3 lg:px-0">{children}</main>
         </div>
         <div className="drawer-side p-0 lg:p-3">
           <label

@@ -1,20 +1,16 @@
-"use client"
-import { useSession, signOut } from "next-auth/react"
 import { ReactNode } from "react"
 import Image from "next/image"
+import { auth } from "@/auth"
+import Logout from "./Logout"
 
-export default function Navbar({ children }: { children?: ReactNode }) {
-  const { data: session, status } = useSession()
+export default async function Navbar({ children }: { children?: ReactNode }) {
+  const session = await auth()
   return (
     <nav className="navbar bg-base-100 rounded-b-2xl lg:rounded-2xl">
       {children}
       <div className="flex-1">
         <a className="btn btn-ghost text-xl flex justify-center">
-          {status === "loading" ? (
-            <span className="loading loading-dots loading-sm"></span>
-          ) : (
-            session?.user?.name
-          )}
+          {session?.user?.name}
         </a>
       </div>
       <div className="flex-none">
@@ -25,16 +21,12 @@ export default function Navbar({ children }: { children?: ReactNode }) {
             className="btn btn-ghost btn-circle avatar"
           >
             <div className="w-10 rounded-full">
-              {status === "loading" ? (
-                <span className="loading loading-ring loading-lg"></span>
-              ) : (
-                <Image
-                  src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp"
-                  alt={""}
-                  width={64}
-                  height={64}
-                />
-              )}
+              <Image
+                src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp"
+                alt={""}
+                width={64}
+                height={64}
+              />
             </div>
           </div>
           <ul
@@ -51,7 +43,7 @@ export default function Navbar({ children }: { children?: ReactNode }) {
               <a>Settings</a>
             </li>
             <li>
-              <a onClick={() => signOut()}>Logout</a>
+              <Logout />
             </li>
           </ul>
         </div>

@@ -1,12 +1,14 @@
-import { createProject, IProject, projectSchema } from "@/models/project.model"
+import { createProject, projectSchema } from "@/models/project.model"
 import { IResponse } from "@/types/services"
 import { NextRequest, NextResponse } from "next/server"
 
 export async function POST(req: NextRequest) {
   try {
-    const project = (await req.json()) as IProject
+    const project = (await req.json()) 
+    
     const { error, value } = projectSchema.validate(project)
     if (error) {
+        console.error(error)
       return NextResponse.json<IResponse>(
         { message: error.details[0].message, status: false },
         { status: 400 }

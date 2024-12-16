@@ -2,12 +2,13 @@ import { ObjectId, Document } from "mongodb"
 import Joi from "joi"
 import { db } from "@/libs/client"
 export interface IProject extends Document {
+  _id?: ObjectId
   name: string
   description?: string
-  startDate?: Date
-  endDate?: Date
+  startDate?: string
+  endDate?: string
   status?: "active" | "inactive"
-  tasks: ObjectId[]
+  tasks?: ObjectId[]
   groupId?: string
   repositoryRef?: string
   createAt?: string
@@ -17,16 +18,16 @@ export interface IProject extends Document {
 const Project = db.collection<IProject>("projects")
 
 export const projectSchema = Joi.object({
-  _id: Joi.string().optional(),
+  _id: Joi.string().optional().default(null),
   name: Joi.string().required(),
-  description: Joi.string().optional(),
-  startDate: Joi.date().optional(),
-  endDate: Joi.date().optional(),
-  status: Joi.string().valid(["active", "inactive"]).optional(),
-  tasks: Joi.array().items(Joi.string().valid(ObjectId.isValid)).optional(),
-  groupId: Joi.string().optional(),
-  repositoryRef: Joi.string().optional()
-})
+  description: Joi.string().optional().default(null),
+  startDate: Joi.string().optional().default(null),
+  endDate: Joi.string().optional().default(null),
+  status: Joi.string().valid("active", "inactive").default("active").optional(),
+  tasks: Joi.array().items(Joi.string().valid(ObjectId.isValid)).optional().default(null),
+  groupId: Joi.string().optional().default(null),
+  repositoryRef: Joi.string().optional().default(null),
+});
 
 export async function createProject(project: IProject) {
   try {
