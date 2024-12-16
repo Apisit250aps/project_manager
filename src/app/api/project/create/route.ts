@@ -1,6 +1,6 @@
 import client from "@/libs/client"
 
-import { IProject } from "@/models/project"
+import { IProject } from "@/models/project.model"
 import { NextRequest, NextResponse } from "next/server"
 
 export async function POST(req: NextRequest) {
@@ -9,6 +9,7 @@ export async function POST(req: NextRequest) {
     const project: IProject = (await req.json()) as IProject
     
     console.log(project)
+
     const v = client.db("projects").collection<IProject>("projects").insertOne(project)
     return NextResponse.json({ v })
   } catch (error) {

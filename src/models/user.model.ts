@@ -1,5 +1,6 @@
 import { comparePasswords, generateHashedPassword } from "@/libs/auth"
 import { db } from "@/libs/client"
+import Joi from "joi"
 import { Document } from "mongodb"
 
 export interface IUser extends Document {
@@ -12,6 +13,12 @@ export interface IUser extends Document {
   createAt?: string
   updatedAt?: string
 }
+
+export const userSchema = Joi.object({
+  name: Joi.string().min(3).max(50).required(),
+  email: Joi.string().email().required(),
+  password: Joi.string().min(8).required()
+})
 
 const User = db.collection<IUser>("users")
 
