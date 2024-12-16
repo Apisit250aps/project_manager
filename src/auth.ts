@@ -1,11 +1,10 @@
 // auth.ts
 import { MongoDBAdapter } from "@auth/mongodb-adapter"
 import NextAuth, { DefaultSession, NextAuthConfig } from "next-auth"
-import clientPromise from "./libs/db"
+import clientPromise from "./libs/client"
 import Credentials from "next-auth/providers/credentials"
 import { DefaultJWT, JWT } from "next-auth/jwt"
-import { User as Users } from "./models/user"
-import dbConnect from "./libs/mongoose"
+import { userAuthentication } from "./models/user.model"
 
 declare module "next-auth" {
   interface Session extends DefaultSession {
@@ -32,16 +31,15 @@ export const authOptions = {
       },
       async authorize(credentials) {
         try {
-          await dbConnect()
-
-          const user = await Users.findOne({ email: credentials?.email })
-          if (!user) return null
-
-          const isValid = await user.comparePassword(credentials?.password)
-          if (!isValid) return null
-
+          const user = await userAuthentication(
+            credentials.email as string,
+            credentials.password as string
+          )
+          if (!user) {
+            return null
+          }
           return {
-            id: user._id.toString(),
+            id: user._id,
             email: user.email,
             name: user.name
           }

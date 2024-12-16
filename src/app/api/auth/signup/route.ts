@@ -1,12 +1,9 @@
-import dbConnect from "@/libs/mongoose";
-import { IUser, User } from "@/models/user"
+import { createUser, IUser } from "@/models/user.model"
 import { IResponse } from "@/types/services"
-import { console } from "inspector"
 import { NextRequest, NextResponse } from "next/server"
 
 export const POST = async (req: NextRequest) => {
   try {
-    await dbConnect()
     // Get request body
     const { name, email, password } = (await req.json()) as IUser
 
@@ -18,20 +15,10 @@ export const POST = async (req: NextRequest) => {
       )
     }
 
-    // Check if user already exists
-    const existingUser = await User.findOne({ email, name })
-    if (existingUser) {
-      return NextResponse.json<IResponse>(
-        { message: "Email already exists", status: false },
-        { status: 400 }
-      )
-    }
-
-    // Create new user
-    const newUser = await User.create({ name, email, password })
-
+    const user = await createUser({ email, name, password })
+    console.log(user)
     return NextResponse.json<IResponse>(
-      { message: "Hello from your API endpoint", data: newUser, status: true },
+      { message: "Login successfully!", data: user, status: true },
       { status: 201 }
     )
   } catch (error) {
