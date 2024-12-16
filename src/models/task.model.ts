@@ -9,6 +9,8 @@ export interface ITask extends Document {
   status?: "todo" | "progress" | "pending" | "complete"
   branchRef?: string
   tasks?: ObjectId[]
+  createAt?: string
+  updatedAt?: string
 }
 
 export const taskSchema = Joi.object({

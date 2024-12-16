@@ -1,19 +1,31 @@
-import client from "@/libs/client"
-
-import { IProject } from "@/models/project.model"
+import { createProject, IProject, projectSchema } from "@/models/project.model"
+import { IResponse } from "@/types/services"
 import { NextRequest, NextResponse } from "next/server"
 
 export async function POST(req: NextRequest) {
   try {
-    
-    const project: IProject = (await req.json()) as IProject
-    
-    console.log(project)
-
-    const v = client.db("projects").collection<IProject>("projects").insertOne(project)
-    return NextResponse.json({ v })
+    const project = (await req.json()) as IProject
+    const { error, value } = projectSchema.validate(project)
+    if (error) {
+      return NextResponse.json<IResponse>(
+        { message: error.details[0].message, status: false },
+        { status: 400 }
+      )
+    }
+    const newProject = await createProject(value)
+    return NextResponse.json<IResponse>(
+      {
+        message: "New project created",
+        status: true,
+        data: { newProject }
+      },
+      { status: 201 }
+    )
   } catch (error) {
     console.error(error)
-    return NextResponse.json({})
+    return NextResponse.json<IResponse>({
+      message: "Create project fail!",
+      status: false
+    })
   }
 }

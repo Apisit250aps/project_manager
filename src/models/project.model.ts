@@ -1,5 +1,6 @@
 import { ObjectId, Document } from "mongodb"
 import Joi from "joi"
+import { db } from "@/libs/client"
 export interface IProject extends Document {
   name: string
   description?: string
@@ -9,7 +10,11 @@ export interface IProject extends Document {
   tasks: ObjectId[]
   groupId?: string
   repositoryRef?: string
+  createAt?: string
+  updatedAt?: string
 }
+
+const Project = db.collection<IProject>("projects")
 
 export const projectSchema = Joi.object({
   _id: Joi.string().optional(),
@@ -22,3 +27,17 @@ export const projectSchema = Joi.object({
   groupId: Joi.string().optional(),
   repositoryRef: Joi.string().optional()
 })
+
+export async function createProject(project: IProject) {
+  try {
+    const result = await Project.insertOne({
+      ...project,
+      createAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString()
+    })
+    return result.insertedId as ObjectId
+  } catch (error) {
+    console.error("Error creating project:", error)
+    throw error
+  }
+}
