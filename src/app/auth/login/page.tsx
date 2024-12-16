@@ -1,6 +1,23 @@
-import { FC, ReactNode } from "react"
+"use client"
+import { signIn } from "next-auth/react";
+import { useRouter } from "next/navigation";
+import { FC, ReactNode, useState } from "react"
 
 const LoginPage: FC<ReactNode> = () => {
+
+  const router = useRouter()
+
+  const [email, setEmail] = useState<string>("")
+  const [password, setPassword] = useState<string>("")
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+    const resault = await signIn("credentials", { email, password, redirect: false,} )
+    if (resault?.ok){
+      alert("Login successful")
+      // Redirect to dashboard
+      router.push("/dashboard")
+    }
+  }
   return (
     <>
       <div className="text-center lg:text-left">
@@ -12,7 +29,7 @@ const LoginPage: FC<ReactNode> = () => {
         </p>
       </div>
       <div className="card bg-base-100 w-full max-w-sm shrink-0 shadow-2xl">
-        <form className="card-body">
+        <form className="card-body" onSubmit={handleSubmit}>
           <div className="form-control">
             <label className="label">
               <span className="label-text">Email</span>
@@ -21,6 +38,8 @@ const LoginPage: FC<ReactNode> = () => {
               type="email"
               placeholder="email"
               className="input input-bordered"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
               required
             />
           </div>
@@ -32,6 +51,8 @@ const LoginPage: FC<ReactNode> = () => {
               type="password"
               placeholder="password"
               className="input input-bordered"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
               required
             />
             <label className="label">

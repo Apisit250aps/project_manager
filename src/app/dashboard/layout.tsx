@@ -1,10 +1,12 @@
+import { auth } from "@/auth"
 import Link from "next/link"
 
-export default function DashboardLayout({
+export default async function DashboardLayout({
   children
 }: Readonly<{
   children: React.ReactNode
 }>) {
+  const session = await auth()
   return (
     <>
       <div className="drawer lg:drawer-open">
@@ -21,7 +23,7 @@ export default function DashboardLayout({
               </label>
             </div>
             <div className="flex-1">
-              <a className="btn btn-ghost text-xl">daisyUI</a>
+              <a className="btn btn-ghost text-xl">{session?.user?.name}</a>
             </div>
             <div className="flex-none">
               <button className="btn btn-square btn-ghost">

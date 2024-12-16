@@ -1,10 +1,12 @@
 import { FC, ReactNode } from "react"
 
 const DashboardPage: FC<ReactNode> = () => {
+ 
   return (
     <>
-    asd
+      asd
       <div className="">Dashboard</div>
+   
     </>
   )
 }
