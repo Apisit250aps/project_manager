@@ -4,7 +4,7 @@ import { MongoClient, ServerApiVersion } from "mongodb"
 if (!process.env.MONGODB_URI) {
   throw new Error('Invalid/Missing environment variable: "MONGODB_URI"')
 }
- 
+
 const uri = process.env.MONGODB_URI
 const options = {
   serverApi: {
@@ -13,7 +13,6 @@ const options = {
     deprecationErrors: true,
   },
 }
- 
  // Create a global MongoClient instance. This client will be used throughout
 let client: MongoClient
  

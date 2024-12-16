@@ -78,6 +78,6 @@ export const authOptions = {
       return session
     }
   }
-} satisfies NextAuthConfig
+} as NextAuthConfig
 
 export const { handlers, signIn, signOut, auth } = NextAuth(authOptions)

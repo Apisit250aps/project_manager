@@ -1,21 +1,43 @@
 "use client"
-import { signIn } from "next-auth/react";
-import { useRouter } from "next/navigation";
+import { signIn } from "next-auth/react"
+import {  useRouter, useSearchParams } from "next/navigation"
 import { FC, ReactNode, useState } from "react"
+import Swal from "sweetalert2"
 
 const LoginPage: FC<ReactNode> = () => {
-
+  const param = useSearchParams()
   const router = useRouter()
-
+  const redirect = param.get('redirect')
   const [email, setEmail] = useState<string>("")
   const [password, setPassword] = useState<string>("")
+  console.log(redirect)
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+
     e.preventDefault()
-    const resault = await signIn("credentials", { email, password, redirect: false,} )
-    if (resault?.ok){
-      alert("Login successful")
-      // Redirect to dashboard
-      router.push("/dashboard")
+    const result = await signIn("credentials", {
+      email,
+      password,
+      redirect: false
+    })
+    if (result?.ok) {
+      Swal.fire({
+        title: "Login successful",
+        text: "You are now logged in!",
+        icon: "success"
+      })
+      if (redirect){
+        router.push(`${redirect}`)
+
+      }
+      else {
+        router.push("/dashboard")
+      }
+    } else {
+      Swal.fire({
+        title: "Error",
+        text: "Invalid email or password",
+        icon: "error"
+      })
     }
   }
   return (
